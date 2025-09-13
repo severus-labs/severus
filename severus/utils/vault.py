@@ -1,12 +1,11 @@
 import sqlite3
-from pathlib import Path
 
 def create_vault_db(vault_path):
     conn = sqlite3.connect(vault_path)
     
     # Create table
     conn.execute('''
-        CREATE TABLE IF NOT EXISTS vault_items (
+        CREATE TABLE IF NOT EXISTS vault (
             id INTEGER PRIMARY KEY,
             email TEXT,
             name TEXT UNIQUE,
@@ -16,6 +15,17 @@ def create_vault_db(vault_path):
             project TEXT
         )
     ''')
+    
+    conn.commit()
+    conn.close()
+
+def insert_vault_item(vault_path, name, item_type, file_path, project=None, email=None):
+    conn = sqlite3.connect(vault_path)
+    
+    conn.execute('''
+        INSERT OR REPLACE INTO vault (name, type, file_path, project, email)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (name, item_type, file_path, project, email))
     
     conn.commit()
     conn.close()
