@@ -64,4 +64,51 @@ def secret(ctx: click.Context):
 @click.pass_context
 def note(ctx: click.Context):
     """Add a note"""
-    click.echo("Adding note...")
+    vault_path = ctx.obj["vault_path"]
+    config_path = ctx.obj["config_path"]
+    blobs_directory = ctx.obj["blobs_directory"]
+    
+    if not auth.authenticate(config_path):
+        return
+
+    title = click.prompt("Title (e.g. 'Server Restart Instructions')")
+    title_slug = helpers.slugify(title)
+    
+    # Check if exists and get confirmation early
+    is_update = False
+    if vault.item_exists(vault_path, title_slug):
+        if not click.confirm(f"Warning: '{title_slug}' already exists. Overwrite?"):
+            click.echo("Operation cancelled.")
+            return
+        is_update = True
+
+    # Use click's editor for multiline input
+    body = click.edit("# Enter your note content here")
+    if body is None:
+        click.echo("Note cancelled.")
+        return
+    
+    # Remove comment lines
+    # body = '\n'.join(line for line in body.split('\n') if not line.strip().startswith('#'))
+    
+    project = click.prompt("Project (optional, e.g. 'myapp-backend')", default="", show_default=False)
+
+    # Prepare data
+    data = {
+        "title": title,
+        "body": body.strip(),
+        "project": project or None
+    }
+
+    # Save encrypted file
+    file_path = blobs_directory / f"{title_slug}.enc"
+    totp_secret = auth.load_config(config_path)["secret"]
+    encryption.save_encrypted_file(data, file_path, totp_secret)
+    
+    # Update or insert in database
+    if is_update:
+        vault.update_vault_item(vault_path, title_slug, "note", file_path, project or None)
+        click.echo(f"✓ Note '{title}' updated.")
+    else:
+        vault.insert_vault_item(vault_path, title_slug, "note", file_path, project or None)
+        click.echo(f"✓ Note '{title}' added to vault.")
