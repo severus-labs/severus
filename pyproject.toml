@@ -7,8 +7,14 @@ authors = [
 ]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = ["click (>=8.2.1,<9.0.0)"]
+# requires-python = ">=3.13"
+# Restrict to <4.0 so libraries like qrcode are compatible
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "click (>=8.2.1,<9.0.0)",
+    "pyotp (>=2.9.0,<3.0.0)",
+    "qrcode (>=8.2,<9.0)",
+]
 
 
 [build-system]
