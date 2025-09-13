@@ -25,7 +25,50 @@ def insert_vault_item(vault_path, name, item_type, file_path, project=None, emai
     conn.execute('''
         INSERT OR REPLACE INTO vault (name, type, file_path, project, email)
         VALUES (?, ?, ?, ?, ?)
-    ''', (name, item_type, file_path, project, email))
+    ''', (name, item_type, str(file_path), project, email))
     
+    conn.commit()
+    conn.close()
+
+def item_exists(vault_path, name):
+    conn = sqlite3.connect(vault_path)
+    cursor = conn.execute('SELECT COUNT(*) FROM vault WHERE name = ?', (name,))
+    exists = cursor.fetchone()[0] > 0
+    conn.close()
+    return exists
+
+def update_vault_item(vault_path, name, item_type=None, file_path=None, project=None, email=None):
+    """Update existing vault item with new values (only updates non-None fields)"""
+    conn = sqlite3.connect(vault_path)
+    
+    # Build dynamic update query based on provided fields
+    update_fields = []
+    params = []
+    
+    if item_type is not None:
+        update_fields.append("type = ?")
+        params.append(item_type)
+    
+    if file_path is not None:
+        update_fields.append("file_path = ?")
+        params.append(str(file_path))
+    
+    if project is not None:
+        update_fields.append("project = ?")
+        params.append(project)
+    
+    if email is not None:
+        update_fields.append("email = ?")
+        params.append(email)
+    
+    # Always update the timestamp
+    update_fields.append("created_at = CURRENT_TIMESTAMP")
+    
+    # Add name for WHERE clause
+    params.append(name)
+    
+    query = f"UPDATE vault SET {', '.join(update_fields)} WHERE name = ?"
+    
+    conn.execute(query, params)
     conn.commit()
     conn.close()

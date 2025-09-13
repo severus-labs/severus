@@ -15,7 +15,7 @@ def authenticate(config_path):
         hide_input=True
     )
     
-    if verify_totp(config["totp_secret"], user_token):
+    if verify_totp(config["secret"], user_token):
         return True
     else:
         click.echo("Invalid TOTP code.")

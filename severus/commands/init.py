@@ -13,7 +13,7 @@ def init(ctx: click.Context, email: str) -> None:
     """Initialize Severus"""
     vault_path = ctx.obj["vault_path"]
     config_path = ctx.obj["config_path"]
-
+    blobs_directory = ctx.obj["blobs_directory"]
 
     # Check if already initialized
     if config_path.exists():
@@ -26,6 +26,11 @@ def init(ctx: click.Context, email: str) -> None:
         config_path.unlink()
         if vault_path.exists():
             vault_path.unlink()
+
+         # Remove blobs directory and all contents
+        if blobs_directory.exists():
+            import shutil
+            shutil.rmtree(blobs_directory)
 
     banner = """\
 ┌──────────────────────────────────────────────────────┐
