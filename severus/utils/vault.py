@@ -19,4 +19,3 @@ def create_vault_db(vault_path):
     
     conn.commit()
     conn.close()
-    

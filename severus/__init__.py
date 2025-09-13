@@ -7,16 +7,20 @@ from pathlib import Path
 @click.pass_context
 def cli(ctx: click.Context):
     """Severus: A tool for managing secrets."""
-    directory = Path.home() / ".severus"
-    directory.mkdir(exist_ok=True)
+    root_directory = Path.home() / ".severus"
+    root_directory.mkdir(exist_ok=True)
+
+    blobs_directory = root_directory / "blobs"
+    blobs_directory.mkdir(exist_ok=True)
     
-    vault_path = directory / "vault.db"
-    config_path = directory / "config.json"
+    vault_path = root_directory / "vault.db"
+    config_path = root_directory / "config.json"
 
     ctx.obj = { 
-        "directory": directory, 
+        "root_directory": root_directory, 
         "vault_path": vault_path, 
-        "config_path": config_path
+        "config_path": config_path,
+        "blobs_directory": blobs_directory
     }
 
 cli.add_command(initialize.init)
