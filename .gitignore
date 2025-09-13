@@ -1,0 +1,12 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment (if inside project)
+.venv/
+
+# OS files (optional)
+.DS_Store
+Thumbs.db
+
+.notes

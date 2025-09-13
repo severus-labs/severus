@@ -1,0 +1,19 @@
+[project]
+name = "severus"
+version = "0.1.0"
+description = "Severus is a local-first CLI tool for developers to securely manage API keys, passwords, environment variables, and sensitive notes without cloud dependencies or master password vulnerabilities."
+authors = [
+    { name = "Ekomobong Archibong", email = "59149177+archie-bryann@users.noreply.github.com" },
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["click (>=8.2.1,<9.0.0)"]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+severus = "severus:cli" # entry point to the CLI
