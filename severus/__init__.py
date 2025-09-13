@@ -1,6 +1,6 @@
 import click
-from severus.commands import initialize
 from pathlib import Path
+from severus.commands import init, add
 
 @click.group()
 @click.version_option()
@@ -23,4 +23,5 @@ def cli(ctx: click.Context):
         "blobs_directory": blobs_directory
     }
 
-cli.add_command(initialize.init)
+cli.add_command(init.init)
+cli.add_command(add.add)
