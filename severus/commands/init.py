@@ -10,7 +10,7 @@ from severus.utils import config, totp, vault
 )
 @click.pass_context
 def init(ctx: click.Context, email: str) -> None:
-    """Initialize Severus"""
+    """Initialize new vault"""
     vault_path = ctx.obj["vault_path"]
     config_path = ctx.obj["config_path"]
     blobs_directory = ctx.obj["blobs_directory"]

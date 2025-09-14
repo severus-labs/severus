@@ -14,7 +14,7 @@ def add(ctx: click.Context):
 @add.command()
 @click.pass_context
 def secret(ctx: click.Context):
-    """Add a secret"""
+    """Save password/credential"""
     vault_path = ctx.obj["vault_path"]
     config_path = ctx.obj["config_path"]
     blobs_directory = ctx.obj["blobs_directory"]
@@ -67,7 +67,7 @@ def secret(ctx: click.Context):
 @add.command() 
 @click.pass_context
 def note(ctx: click.Context):
-    """Add a note"""
+    """Save secure note"""
     vault_path = ctx.obj["vault_path"]
     config_path = ctx.obj["config_path"]
     blobs_directory = ctx.obj["blobs_directory"]
@@ -126,7 +126,7 @@ def note(ctx: click.Context):
 @click.argument('filename')
 @click.pass_context
 def file(ctx: click.Context, filename: str):
-    """Import a file as a note"""
+    """Import file as note"""
     vault_path = ctx.obj["vault_path"]
     config_path = ctx.obj["config_path"]
     blobs_directory = ctx.obj["blobs_directory"]

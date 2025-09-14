@@ -6,7 +6,7 @@ from severus.commands import init, add, edit, env, list, search, show, delete, h
 @click.version_option()
 @click.pass_context
 def cli(ctx: click.Context):
-    """Severus: A tool for managing secrets."""
+    """Severus - Your Local-First Secret Vault"""
     root_directory = Path.home() / ".severus"
     root_directory.mkdir(exist_ok=True)
 
