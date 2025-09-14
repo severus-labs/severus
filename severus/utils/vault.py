@@ -73,6 +73,13 @@ def update_vault_item(vault_path, name, item_type=None, file_path=None, project=
     conn.commit()
     conn.close()
 
+def get_vault_item_by_name(vault_path, name):
+    conn = sqlite3.connect(vault_path)
+    cursor = conn.execute('SELECT type FROM vault WHERE name = ?', (name,))
+    result = cursor.fetchone()
+    conn.close()
+    return result[0] if result else None 
+
 def get_env_items_by_project(vault_path, project_name):
     conn = sqlite3.connect(vault_path)
     cursor = conn.execute(
@@ -100,3 +107,10 @@ def search_vault_items(vault_path, query):
     items = [{'name': row[0], 'type': row[1], 'created_at': row[2]} for row in cursor.fetchall()]
     conn.close()
     return items
+
+def delete_vault_item(vault_path, name):
+    """Delete a vault item from the database"""
+    conn = sqlite3.connect(vault_path)
+    conn.execute('DELETE FROM vault WHERE name = ?', (name,))
+    conn.commit()
+    conn.close()   
