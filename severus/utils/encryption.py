@@ -1,4 +1,3 @@
-# severus/utils/crypto.py
 import os
 import json
 from cryptography.fernet import Fernet

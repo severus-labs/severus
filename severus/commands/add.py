@@ -3,6 +3,7 @@ from severus.utils import auth
 from severus.utils import vault
 from severus.utils import encryption
 from severus.utils import helpers
+from severus.utils import info
 
 @click.group()
 @click.pass_context
@@ -52,12 +53,15 @@ def secret(ctx: click.Context):
     totp_secret = auth.load_config(config_path)["secret"]
     encryption.save_encrypted_file(data, file_path, totp_secret)
     
+    # email
+    email = auth.load_config(config_path).get("email")
+    
     # Update or insert in database
     if is_update:
-        vault.update_vault_item(vault_path, name, "secret", file_path, project or None)
+        vault.update_vault_item(vault_path, name, "secret", file_path, project or None, email)
         click.echo(f"✓ Secret '{name}' updated.")
     else:
-        vault.insert_vault_item(vault_path, name, "secret", file_path, project or None)
+        vault.insert_vault_item(vault_path, name, "secret", file_path, project or None, email)
         click.echo(f"✓ Secret '{name}' added to vault.")
 
 @add.command() 
@@ -71,16 +75,18 @@ def note(ctx: click.Context):
     if not auth.authenticate(config_path):
         return
 
-    title = click.prompt("Title (e.g. 'Server Restart Instructions')")
-    title_slug = helpers.slugify(title)
+    name = click.prompt("Name (e.g. 'Server Restart Instructions')")
+    name_slug = helpers.slugify(name)
     
     # Check if exists and get confirmation early
     is_update = False
-    if vault.item_exists(vault_path, title_slug):
-        if not click.confirm(f"Warning: '{title_slug}' already exists. Overwrite?"):
+    if vault.item_exists(vault_path, name_slug):
+        if not click.confirm(f"Warning: '{name_slug}' already exists. Overwrite?"):
             click.echo("Operation cancelled.")
             return
         is_update = True
+
+    info.editor(name_slug)
 
     # Use click's editor for multiline input
     body = click.edit("# Enter your note content here")
@@ -95,20 +101,23 @@ def note(ctx: click.Context):
 
     # Prepare data
     data = {
-        "title": title,
+        "name": name,
         "body": body.strip(),
         "project": project or None
     }
 
     # Save encrypted file
-    file_path = blobs_directory / f"{title_slug}.enc"
+    file_path = blobs_directory / f"{name_slug}.enc"
     totp_secret = auth.load_config(config_path)["secret"]
     encryption.save_encrypted_file(data, file_path, totp_secret)
+
+    # email
+    email = auth.load_config(config_path).get("email")
     
     # Update or insert in database
     if is_update:
-        vault.update_vault_item(vault_path, title_slug, "note", file_path, project or None)
-        click.echo(f"✓ Note '{title}' updated.")
+        vault.update_vault_item(vault_path, name_slug, "note", file_path, project or None, email)
+        click.echo(f"✓ Note '{name}' updated.")
     else:
-        vault.insert_vault_item(vault_path, title_slug, "note", file_path, project or None)
-        click.echo(f"✓ Note '{title}' added to vault.")
+        vault.insert_vault_item(vault_path, name_slug, "note", file_path, project or None, email)
+        click.echo(f"✓ Note '{name}' added to vault.")

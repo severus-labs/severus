@@ -67,6 +67,6 @@ def init(ctx: click.Context, email: str) -> None:
         click.echo(f"✓ Configuration saved to {config_path} (keep secure)\n")
     else:
         click.echo("\nInvalid code! Please try again.")
-        return  # optionally exit or loop until valid
+        return
 
     click.echo("Run 'severus help' to get started.")

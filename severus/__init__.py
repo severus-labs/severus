@@ -1,6 +1,6 @@
 import click
 from pathlib import Path
-from severus.commands import init, add
+from severus.commands import init, add, edit
 
 @click.group()
 @click.version_option()
@@ -25,3 +25,4 @@ def cli(ctx: click.Context):
 
 cli.add_command(init.init)
 cli.add_command(add.add)
+cli.add_command(edit.edit)
