@@ -1,6 +1,6 @@
 import click
 from pathlib import Path
-from severus.commands import init, add, edit, env, list, search, show, delete
+from severus.commands import init, add, edit, env, list, search, show, delete, help
 
 @click.group()
 @click.version_option()
@@ -31,3 +31,4 @@ cli.add_command(list.list)
 cli.add_command(search.search)
 cli.add_command(show.show)
 cli.add_command(delete.delete)
+cli.add_command(help.help)
