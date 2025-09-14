@@ -121,3 +121,81 @@ def note(ctx: click.Context):
     else:
         vault.insert_vault_item(vault_path, name_slug, "note", file_path, project or None, email)
         click.echo(f"✓ Note '{name}' added to vault.")
+
+@add.command()
+@click.argument('filename')
+@click.pass_context
+def file(ctx: click.Context, filename: str):
+    """Import a file as a note"""
+    vault_path = ctx.obj["vault_path"]
+    config_path = ctx.obj["config_path"]
+    blobs_directory = ctx.obj["blobs_directory"]
+    
+    if not auth.authenticate(config_path):
+        return
+    
+    # Check if file exists
+    from pathlib import Path
+    file_path = Path(filename)
+    if not file_path.exists():
+        click.echo(f"Error: File '{filename}' not found.")
+        return
+    
+    # Use filename as note name
+    name = file_path.name
+    name_slug = helpers.slugify(name)
+    
+    # Check if exists and get confirmation
+    is_update = False
+    if vault.item_exists(vault_path, name_slug):
+        if not click.confirm(f"Warning: '{name_slug}' already exists. Overwrite?"):
+            click.echo("Operation cancelled.")
+            return
+        is_update = True
+    
+    # Read file content
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except UnicodeDecodeError:
+        try:
+            # Try with different encoding for binary-ish files
+            with open(file_path, 'r', encoding='latin1') as f:
+                content = f.read()
+        except Exception as e:
+            click.echo(f"Error: Could not read file '{filename}': {e}")
+            return
+    except Exception as e:
+        click.echo(f"Error: Could not read file '{filename}': {e}")
+        return
+    
+    click.echo(f"Importing {filename} as note...")
+    
+    # Get current directory for project context
+    current_dir = Path.cwd()
+    project = helpers.slugify(current_dir.name)
+    
+    # Prepare data
+    data = {
+        "name": name,
+        "body": content,
+        "project": project,
+        "original_filename": filename,
+        "imported_from": str(file_path.absolute())
+    }
+    
+    # Save encrypted file
+    encrypted_file_path = blobs_directory / f"{name_slug}.enc"
+    totp_secret = auth.load_config(config_path)["secret"]
+    encryption.save_encrypted_file(data, encrypted_file_path, totp_secret)
+    
+    # Get email
+    email = auth.load_config(config_path).get("email")
+    
+    # Update or insert in database
+    if is_update:
+        vault.update_vault_item(vault_path, name_slug, "note", encrypted_file_path, project, email)
+    else:
+        vault.insert_vault_item(vault_path, name_slug, "note", encrypted_file_path, project, email)
+    
+    click.echo(f"✓ Note '{name}' saved to vault.")
