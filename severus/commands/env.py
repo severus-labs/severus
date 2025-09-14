@@ -4,7 +4,6 @@ from severus.utils import auth
 from severus.utils import vault
 from severus.utils import encryption
 from severus.utils import helpers
-from severus.utils import info
 
 @click.group()
 @click.pass_context

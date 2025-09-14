@@ -1,6 +1,7 @@
 # severus/utils/helpers.py
 import re
 from severus.utils import helpers
+from datetime import datetime
 
 def slugify(text):
     """Convert text to a safe filename slug"""
@@ -35,3 +36,21 @@ def resolve_env_name(env_name, current_project):
     else:
         # Direct name like myapp-env or severus-env-local
         return helpers.slugify(env_name)
+    
+def time_ago(timestamp_str):
+    """Convert timestamp to human-readable time ago"""
+    try:
+        dt = datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
+        now = datetime.now()
+        diff = now - dt
+        
+        if diff.days > 0:
+            return f"{diff.days} day{'s' if diff.days != 1 else ''} ago"
+        elif diff.seconds > 3600:
+            hours = diff.seconds // 3600
+            return f"{hours} hour{'s' if hours != 1 else ''} ago"
+        else:
+            minutes = diff.seconds // 60
+            return f"{minutes} min ago"
+    except:
+        return "unknown"

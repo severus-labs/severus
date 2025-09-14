@@ -82,3 +82,10 @@ def get_env_items_by_project(vault_path, project_name):
     env_items = cursor.fetchall()
     conn.close()
     return env_items
+
+def get_all_vault_items(vault_path):
+    conn = sqlite3.connect(vault_path)
+    cursor = conn.execute('SELECT name, type, created_at FROM vault ORDER BY type, name')
+    items = [{'name': row[0], 'type': row[1], 'created_at': row[2]} for row in cursor.fetchall()]
+    conn.close()
+    return items
