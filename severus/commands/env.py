@@ -82,12 +82,14 @@ def save(ctx: click.Context, env_name: str):
         file_path = blobs_directory / f"{env_slug}.enc"
         encryption.save_encrypted_file(data, file_path, totp_secret)
         
+        # email
+        email = auth.load_config(config_path).get("email")
+        
         # Insert/update in database
         if vault.item_exists(vault_path, env_slug):
-            vault.update_vault_item(vault_path, env_slug, "env", file_path, project_name)
+            vault.update_vault_item(vault_path, env_slug, "env", file_path, project_name, email)
         else:
-            vault.insert_vault_item(vault_path, env_slug, "env", file_path, project_name)
-        
+            vault.insert_vault_item(vault_path, env_slug, "env", file_path, project_name, email)
         click.echo(f"✓ Saved {env_file.name} as '{env_slug}'")
         saved_count += 1
     
