@@ -89,3 +89,14 @@ def get_all_vault_items(vault_path):
     items = [{'name': row[0], 'type': row[1], 'created_at': row[2]} for row in cursor.fetchall()]
     conn.close()
     return items
+
+def search_vault_items(vault_path, query):
+    """Search vault items by name (case-insensitive partial match)"""
+    conn = sqlite3.connect(vault_path)
+    cursor = conn.execute(
+        'SELECT name, type, created_at FROM vault WHERE name LIKE ? ORDER BY type, name',
+        (f'%{query.lower()}%',)
+    )
+    items = [{'name': row[0], 'type': row[1], 'created_at': row[2]} for row in cursor.fetchall()]
+    conn.close()
+    return items

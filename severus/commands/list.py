@@ -26,7 +26,7 @@ def list(ctx: click.Context):
     envs = [item for item in items if item['type'] == 'env']
     
     total_count = len(items)
-    click.echo(f"Your Vault ({total_count} items):\n")
+    click.echo(f"Your Vault ({total_count} items):")
     
     if secrets:
         click.echo("Secrets:")
