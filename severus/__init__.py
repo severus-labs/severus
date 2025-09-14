@@ -11,6 +11,7 @@ from severus.commands import (
     delete,
     help,
     share,
+    receive
 )
 
 @click.group()
@@ -44,3 +45,4 @@ cli.add_command(show.show)
 cli.add_command(delete.delete)
 cli.add_command(help.help)
 cli.add_command(share.share)
+cli.add_command(receive.receive)
