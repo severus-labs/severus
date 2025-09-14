@@ -72,3 +72,13 @@ def update_vault_item(vault_path, name, item_type=None, file_path=None, project=
     conn.execute(query, params)
     conn.commit()
     conn.close()
+
+def get_env_items_by_project(vault_path, project_name):
+    conn = sqlite3.connect(vault_path)
+    cursor = conn.execute(
+        'SELECT name, file_path FROM vault WHERE type = "env" AND (project = ? OR name LIKE ?)',
+        (project_name, f"{project_name}-env%")
+    )
+    env_items = cursor.fetchall()
+    conn.close()
+    return env_items
