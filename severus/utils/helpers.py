@@ -1,4 +1,4 @@
-# severus/utils/helpers.py
+import click
 import re
 from severus.utils import helpers
 from datetime import datetime
@@ -55,9 +55,9 @@ def time_ago(timestamp_str):
     except:
         return "unknown"
     
-    def validate_email(ctx, param, value):
-        """Validate email format using regex"""
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if not re.match(email_pattern, value):
-            raise click.BadParameter('Please enter a valid email address')
-        return value
+def validate_email(ctx, param, value):
+    """Validate email format using regex"""
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if not re.match(email_pattern, value):
+        raise click.BadParameter('Please enter a valid email address')
+    return value

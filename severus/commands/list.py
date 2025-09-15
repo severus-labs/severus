@@ -20,10 +20,22 @@ def list(ctx: click.Context):
         click.echo("Your vault is empty.")
         return
     
-    # Group items by type
-    secrets = [item for item in items if item['type'] == 'secret']
-    notes = [item for item in items if item['type'] == 'note']
-    envs = [item for item in items if item['type'] == 'env']
+    # Group items by type and sort each group by created_at (latest first)
+    secrets = sorted(
+        [item for item in items if item['type'] == 'secret'],
+        key=lambda x: x['created_at'], 
+        reverse=True
+    )
+    notes = sorted(
+        [item for item in items if item['type'] == 'note'],
+        key=lambda x: x['created_at'], 
+        reverse=True
+    )
+    envs = sorted(
+        [item for item in items if item['type'] == 'env'],
+        key=lambda x: x['created_at'], 
+        reverse=True
+    )
     
     total_count = len(items)
     click.echo(f"Your Vault ({total_count} items):")
