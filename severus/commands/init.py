@@ -1,11 +1,13 @@
 import click
 from severus.utils import config, totp, vault
+from severus.utils import helpers
 
 @click.command()
 @click.option(
     "--email",
     prompt="Enter your email",
     confirmation_prompt=True,
+    callback=helpers.validate_email,
     help="The email associated with your account",
 )
 @click.pass_context
