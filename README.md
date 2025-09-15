@@ -4,6 +4,8 @@
 
 Severus is a command-line secret manager built specifically for developers and crypto teams. Store API keys, credentials, environment variables, and sensitive notes in an encrypted vault with TOTP authentication—no master passwords required.
 
+📄 [Read the Whitepaper](https://drive.google.com/file/d/1BUPaHn7NnX5LxD0aYrXh3qjDAmFGNkqR/view?usp=sharing)
+
 ## Installation
 
 ```bash
