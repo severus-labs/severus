@@ -296,6 +296,6 @@ MIT License - see LICENSE file for details.
 
 - Documentation: [GitHub](https://github.com/severus-labs/severus)
 - Issues: [GitHub Issues](https://github.com/your-username/severus/issues)
-- Security: byannoo7pal@gmail.com
+- Security: ekomobongarchibong24@gmail.com
 
 ---
